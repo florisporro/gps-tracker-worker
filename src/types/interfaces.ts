@@ -1,4 +1,4 @@
-import { Frame } from "./frame";
+import { Frame } from "../lib/frame";
 
 export interface Position {
 	latitude: number;

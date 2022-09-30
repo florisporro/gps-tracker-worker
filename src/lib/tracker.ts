@@ -1,6 +1,6 @@
-import { lightbugPayloadToFrame } from "./handlers/lightbug";
+import { lightbugPayloadToFrame } from "../handlers/lightbug";
 
-import { NewFrame } from "./interfaces"
+import { NewFrame } from "../types/interfaces"
 import { Frame } from "./frame"
 
 interface Env {}

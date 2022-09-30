@@ -1,4 +1,4 @@
-export { Tracker } from './tracker'
+export { Tracker } from './lib/tracker'
 
 export default {
   async fetch(request: Request, env: Env) {

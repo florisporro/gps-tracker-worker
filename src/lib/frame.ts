@@ -1,4 +1,4 @@
-import { Position, NewFrame } from "./interfaces"
+import { Position, NewFrame } from "../types/interfaces"
 
 export class Frame {
 	readonly frameno: number;
