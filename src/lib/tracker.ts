@@ -16,8 +16,8 @@ export class Tracker {
     this.sessions = []
   }
 
-  async getFrames() {
-    const response = await this.state.storage?.list({ reverse: true, limit: 500 }) || []
+  async getFrames(limit = 50) {
+    const response = await this.state.storage?.list({ reverse: true, limit}) || []
     const frames = [...response.values()]
     const json = JSON.stringify(frames, null, 2)
     return json
@@ -52,7 +52,7 @@ export class Tracker {
         });
       }
 
-      const json = await this.getFrames()
+      const json = await this.getFrames(1000)
   
       return new Response(json, {
         headers: {
@@ -82,6 +82,12 @@ export class Tracker {
           }
           const frame = lightbugPayloadToFrame(json)
           return await this.handleRecord(frame)
+        case "reset":
+          console.log("Resetting storage")
+          this.storage?.deleteAll()
+          return new Response("Storage reset", {
+            status: 200
+          });
         default:
           return new Response("nope", {
               status: 418
@@ -140,10 +146,19 @@ export class Tracker {
       return new Response("Invalid payload", { status: 400 })
     }
 
-    const storage = await this.storage?.list({ reverse: true, limit: 1000 }) || []
+    if (newFrame.accuracy !== undefined && newFrame.accuracy > 300) {
+      return new Response("Accuracy too low", { status: 400 })
+    }
+
+    const storage = await this.storage?.list({ reverse: true, limit: 10 }) || []
     const frames = [...storage?.values()]
 
-    const currentFrame = frames[0] as Frame
+    let currentFrame: Frame | undefined
+    if (frames[0] !== undefined) {
+      if (typeof frames[0] === "string") {
+        currentFrame = JSON.parse(frames[0]) as Frame
+      }
+    }
 
     const frame = new Frame({ ...newFrame, lastFrame: currentFrame })
 
